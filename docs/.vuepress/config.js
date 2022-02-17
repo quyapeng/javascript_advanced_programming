@@ -40,7 +40,12 @@ module.exports = {
       {
         title: '第一章 什么是JavaScript',
         collapsable: false,
-        children: ['/project/javascript_info', '/project/javascript_start']
+        children: ['/project/javascript_info']
+      },
+      {
+        title: '第一章 HTML 中的 JavaScript',
+        collapsable: false,
+        children: ['/project/javascript_html']
       }
     ]
   }

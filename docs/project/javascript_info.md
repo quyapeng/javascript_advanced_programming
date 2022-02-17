@@ -24,3 +24,56 @@ Navigator 2 正式发布前，网景把 LiveScript 改名为 JavaScript，以便
 1998 年，国际标准化组织（ISO）和国际电工委员会（IEC）也将 ECMAScript 采纳为标准（ISO/
 IEC-16262）。自此以后，各家浏览器均以 ECMAScript 作为自己 JavaScript 实现的依据，虽然具体实现
 各有不同。
+
+# JavaScript 实现
+
+虽然 JavaScript 和 ECMAScript 基本上是同义词，但是 JavaScript 远远不限于 ECMAS-262 所定义的那样。
+完整的 JavaScript 实现包含一下几个部分：
+核心 ECMAScript
+文档对象模型 DOM
+浏览器对象模型 BOM
+
+## ECMAScript
+
+如果不涉及浏览器的话，ECMA-262 到底定义了什么？在基本的层面，它描述这门语言的如下部分：
+
+1. 语法
+2. 类型
+3. 语句
+4. 关键字
+5. 保留字
+6. 操作符
+7. 全局对象
+
+## DOM
+
+文档对象模型（DOM，Document Object Model）是一个应用编程接口（API），用于在 HTML 中使用扩展的 XML。DOM 将整个页面抽象为一组分层节点。HTML 或 XML 页面的每个组成部分都是一种节点，包含不同的数据。
+
+## BOM
+
+IE3 和 Netscape Navigator 3 提供了浏览器对象模型（BOM） API，用于支持访问和操作浏览器的窗口。使用 BOM，开发者可以操控浏览器显示页面之外的部分。而 BOM 真正独一无二的地方，当然也是问题最多的地方，就是它是唯一一个没有相关标准的 JavaScript 实现。HTML5 改变了这个局面，这个版本的 HTML 以正式规范的形式涵盖了尽可能多的 BOM 特性。由于 HTML5 的出现，之前很多与 BOM 有关的问题都迎刃而解了。
+
+总体来说，BOM 主要针对浏览器窗口和子窗口（frame），不过人们通常会把任何特定于浏览器的扩展都归在 BOM 的范畴内。比如，下面就是这样一些扩展：
+
+1. 弹出新浏览器窗口的能力；
+2. 移动、缩放和关闭浏览器窗口的能力；
+3. navigator 对象，提供关于浏览器的详尽信息；
+4. location 对象，提供浏览器加载页面的详尽信息；
+5. screen 对象，提供关于用户屏幕分辨率的详尽信息；
+6. performance 对象，提供浏览器内存占用、导航行为和时间统计的详尽信息；
+7. 对 cookie 的支持；
+8. 其他自定义对象，如 XMLHttpRequest 和 IE 的 ActiveXObject。
+
+因为在很长时间内都没有标准，所以每个浏览器实现的都是自己的 BOM。有一些所谓的事实标准，比如对于 window 对象和 navigator 对象，每个浏览器都会给它们定义自己的属性和方法。现在有了 HTML5，BOM 的实现细节应该会日趋一致。关于 BOM，本书会在第 12 章再专门详细介绍。
+
+# JavaScript 版本
+
+JavaScript 是一门用来与网页交互的脚本语言，包含以下三个组成部分。
+ ECMAScript：由 ECMA-262 定义并提供核心功能。
+ 文档对象模型（DOM）：提供与网页内容交互的方法和接口。
+ 浏览器对象模型（BOM）：提供与浏览器交互的方法和接口。
+JavaScript 的这三个部分得到了五大 Web 浏览器（IE、Firefox、Chrome、Safari 和 Opera）不同程度
+的支持。所有浏览器基本上对 ES5（ECMAScript 5）提供了完善的支持，而对 ES6（ECMAScript 6）和
+ES7（ECMAScript 7）的支持度也在不断提升。这些浏览器对 DOM 的支持各不相同，但对 Level 3 的支
+持日益趋于规范。HTML5 中收录的 BOM 会因浏览器而异，不过开发者仍然可以假定存在很大一部分
+公共特性。
