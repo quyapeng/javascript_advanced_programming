@@ -1,6 +1,6 @@
 # HTML 中的 JavaScript
 
-### <script>元素
+### 2.1<script>元素
 
 1. async: 可选。便是应该立即开始下载脚本，但不能阻止其他页面动作。比如下载资源或等他其他脚本加载。只对外部脚本文件有效。
 2. charset:可选。使用 src 属性指定的代码字符集。这个属性很少使用，因为大多数浏览器不在乎他的值。
@@ -186,13 +186,13 @@ document.head.appendChild(script);
 ```js
 <script type="text/javascript">
  function compare(a, b) {
-if (a &lt; b) {
- console.log("A is less than B");
-} else if (a > b) {
- console.log("A is greater than B");
- } else {
- console.log("A is equal to B");
- }
+   if (a &lt; b) {
+   console.log("A is less than B");
+   } else if (a > b) {
+   console.log("A is greater than B");
+   } else {
+   console.log("A is equal to B");
+   }
  }
 </script>
 ```
@@ -251,4 +251,109 @@ console.log("Hi!");
 
 使用这种格式，Mosaic 等浏览器就可以忽略`<script>`标签中的内容，而支持 JavaScript 的浏览器则必须识别这种模式，将其中的内容作为 JavaScript 来解析。虽然这种格式仍然可以被所有浏览器识别和解析，但已经不再必要，而且不应该再使用了。在 XHTML 模式下，这种格式也会导致脚本被忽略，因为代码处于有效的 XML 注释当中。
 
-### 行内代码与外部文件
+### 2.2行内代码与外部文件
+
+虽然可以直接在 HTML 文件中嵌入 JavaScript 代码，但是通常认为最佳时间是尽可能将 JavaScript 代码放在外部文件中，不过这个最佳实践并不是明确的强制性规则。推荐使用外部文件的理由如下：
+
+1. 可维护性
+JavaScript 代码如果分散到很多 HTML 页面，会导致维护困难。而用一个目录保存所有 JavaScript 文件，则更容易维护，这样开发者就可以独立于使用它们的 HTML 页面来编辑代码。
+
+2. 缓存
+浏览器会根据特定的设置缓存所有外部链接的 JavaScript 文件，这意味着如果两个页面都用到同一个文件，则该文件只需下载一次。这最终意味着页面加载更快。
+
+3. 适应未来
+通过把 JavaScript 放到外部文件中，就不必考虑用 XHTML 或前面提到的注释黑科技。
+包含外部 JavaScript 文件的语法在 HTML 和 XHTML 中是一样的。
+在配置浏览器请求外部文件时，要重点考虑的一点时他们会占用多少带宽。在SPDY/HTTP2中，预请求的消耗已显著降低，以轻量，独立JavaScript组件形式向客户端送达脚本更具优势。
+
+比如，第一个页面包含如下脚本：
+```js
+<script src="mainA.js"></script> 
+<script src="component1.js"></script> 
+<script src="component2.js"></script> 
+<script src="component3.js"></script> 
+```
+后续页面可能包含如下脚本：
+```js
+<script src="mainB.js"></script> 
+<script src="component3.js"></script> 
+<script src="component4.js"></script> 
+<script src="component5.js"></script>
+```
+到浏览器缓存中。从浏览器角度看，通过 SPDY/HTTP2 获取所有这些独立的资源与获取一个大JavaScript 文件的延迟差不多。
+在第二个页面请求时，由于你已经把应用程序切割成了轻量可缓存的文件，第二个页面也依赖的某些组件此时已经存在于浏览器缓存中了。
+当然，这里假设浏览器支持 SPDY/HTTP2，只有比较新的浏览器才满足。如果你还想支持那些比较老的浏览器，可能还是用一个大文件更合适。
+
+### 文档模式
+
+IE5.5 发明了文档模式的概念，即可以使用 doctype 切换文档模式。最初的文档模式有两种：混杂模式（quirks mode）和标准模式（standards mode）。前者让 IE 像 IE5 一样（支持一些非标准的特性），后者让 IE 具有兼容标准的行为。虽然这两种模式的主要区别只体现在通过 CSS 渲染的内容方面，但对
+JavaScript 也有一些关联影响，或称为副作用。本书会经常提到这些副作用。IE 初次支持文档模式切换以后，其他浏览器也跟着实现了。随着浏览器的普遍实现，又出现了第三种文档模式：准标准模式（almost standards mode）。这种模式下的浏览器支持很多标准的特性，但是没有标准规定得那么严格。主要区别在于如何对待图片元素周围的空白（在表格中使用图片时最明显）。
+混杂模式在所有浏览器中都以省略文档开头的 doctype 声明作为开关。这种约定并不合理，因为混杂模式在不同浏览器中的差异非常大，不使用黑科技基本上就没有浏览器一致性可言。
+标准模式通过下列几种文档类型声明开启：
+```js
+<!-- HTML 4.01 Strict --> 
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN" 
+"http://www.w3.org/TR/html4/strict.dtd"> 
+<!-- XHTML 1.0 Strict --> 
+<!DOCTYPE html PUBLIC 
+"-//W3C//DTD XHTML 1.0 Strict//EN" 
+"http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"> 
+<!-- HTML5 --> 
+<!DOCTYPE html> 
+```
+准标准模式通过过渡性文档类型（Transitional）和框架集文档类型（Frameset）来触发：
+```js
+<!-- HTML 4.01 Transitional --> 
+<!DOCTYPE HTML PUBLIC 
+"-//W3C//DTD HTML 4.01 Transitional//EN" 
+"http://www.w3.org/TR/html4/loose.dtd"> 
+<!-- HTML 4.01 Frameset --> 
+<!DOCTYPE HTML PUBLIC 
+"-//W3C//DTD HTML 4.01 Frameset//EN" 
+"http://www.w3.org/TR/html4/frameset.dtd"> 
+<!-- XHTML 1.0 Transitional --> 
+<!DOCTYPE html PUBLIC 
+"-//W3C//DTD XHTML 1.0 Transitional//EN" 
+"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd"> 
+<!-- XHTML 1.0 Frameset --> 
+<!DOCTYPE html PUBLIC 
+"-//W3C//DTD XHTML 1.0 Frameset//EN" 
+"http://www.w3.org/TR/xhtml1/DTD/xhtml1-frameset.dtd"> 
+```
+准标准模式与标准模式非常接近，很少需要区分。人们在说到“标准模式”时，可能指其中任何一
+个。而对文档模式的检测（本书后面会讨论）也不会区分它们。本书后面所说的标准模式，指的就是除
+混杂模式以外的模式。
+
+### <noscript>元素
+针对早期浏览器不支持JavaScript的问题，需要一个页面优雅降级的处理方案。最终<noscript>元素出现，被用于给不支持JavaScript的浏览器提供替代内容。虽然如今的浏览器以及100%支持JavaScript，但是对于禁用JavaScript的浏览器来说，这个元素仍然有用。
+`<noscript>`元素可以包含任何可以出现在`<body>`中的 HTML 元素，`<script>`除外。在下列两种情况下，浏览器将显示包含在`<noscript>`中的内容：
+1. 浏览器不支持脚本；
+2. 浏览器对脚本的支持被关闭。
+任何一个条件被满足，包含在`<noscript>`中的内容就会被渲染。否则，浏览器不会渲染<noscript>中的内容。
+下面是一个例子：
+```html
+<!DOCTYPE html> 
+<html> 
+ <head> 
+ <title>Example HTML Page</title> 
+ <script defer="defer" src="example1.js"></script> 
+ <script defer="defer" src="example2.js"></script> 
+ </head> 
+ <body> 
+<noscript> 
+<p>This page requires a JavaScript-enabled browser.</p> 
+</noscript> 
+ </body> 
+</html> 
+```
+这个例子是在脚本不可用时让浏览器显示一段话。如果浏览器支持脚本，则用户永远不会看到它。
+
+### 小结
+
+JavaScript 是通过`<script>`元素插入到 HTML 页面中的。这个元素可用于把 JavaScript 代码嵌入到HTML 页面中，跟其他标记混合在一起，也可用于引入保存在外部文件中的 JavaScript。本章的重点可以总结如下。
+1. 要包含外部 JavaScript 文件，必须将 src 属性设置为要包含文件的 URL。文件可以跟网页在同一台服务器上，也可以位于完全不同的域。
+2. 所有`<script>`元素会依照它们在网页中出现的次序被解释。在不使用 defer 和 async 属性的情况下，包含在`<script>`元素中的代码必须严格按次序解释。
+3. 对不推迟执行的脚本，浏览器必须解释完位于`<script>`元素中的代码，然后才能继续渲染页面的剩余部分。为此，通常应该把`<script>`元素放到页面末尾，介于主内容之后及`</body>`标签之前。
+4. 可以使用 defer 属性把脚本推迟到文档渲染完毕后再执行。推迟的脚本原则上按照它们被列出的次序执行。
+5. 可以使用 async 属性表示脚本不需要等待其他脚本，同时也不阻塞文档渲染，即异步加载。异步脚本不能保证按照它们在页面中出现的次序执行。
+6. 通过使用`<noscript>`元素，可以指定在浏览器不支持脚本时显示的内容。如果浏览器支持并启用脚本，则`<noscript>`元素中的任何内容都不会被渲染。
