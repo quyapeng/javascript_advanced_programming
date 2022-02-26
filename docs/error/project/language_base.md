@@ -347,7 +347,35 @@ if (true) {
 console.log(name); // Matt
 
 ```
+const声明的限制是适用于她只想的变量的引用，换句话说就是，如果const变量引用的是一个对象，那么修改这个对象内部的属性并不违反const的限制。
 
+```js
+const person = {};
+person,name = 'tom';// ok
+
+```
+JavaScript引擎会为for循环中的let声明分别创建独立的变量实例，虽然const变量跟let变量很相似，但是不能用const来声明迭代变量，因为迭代变量会自增。
+
+```js
+for(const i = 0;i<10;i++){
+
+}// TypeError: 给常量赋值
+```
+不过如果你只想用const声明一个不会被修改的for循环变量，那也是可以的，也就是说每次迭代只是创建一个新的变量，这对for-in和for-of循环特别有意义。
+
+```js
+let i = 0;
+for(const j = 7;i<5;i++>){
+  console.log(j);
+}// 7 7 7 7 7
+for(const key in {a:1, b:2}){
+  console.log(key);
+}//a,b
+for(const value of [1,2,3,4,5]){
+  console.log(value);
+}//1,2,3,4,5
+
+```
 #### 声明风格及最佳实践
 
 ### 数据类型
