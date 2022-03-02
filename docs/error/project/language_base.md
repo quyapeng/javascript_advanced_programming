@@ -385,6 +385,24 @@ ECMAScript 6 增加let和const从客观上为这门语言更精确的生命作�
 
 
 ### 数据类型
+ECMAScript 有6种简单数据类型，也称为原始类型：Undefined,Null,Boolean,String,Number,Symbol。
+Symbel是 ECMAScript 6新增的。还有一种复杂数据类型叫Object对象。Object是一种无序名值对的集合，因为在ECMAScript 中不能定义自己的数据类型，所有值都可以用上述7中数据类型之一来表示。只有7种数据类型似乎不足以表示全部数据，但是ECMAScript的数据类型很灵活，一种数据类型可以当作多重数据类型来使用。
+#### typeof 操作符
+
+#### Undefined 类型
+
+#### Null 类型
+
+#### Boolean 类型
+
+#### Number 类型
+
+#### String 类型
+
+#### Symbol 类型
+
+#### Object 类型
+#### typeof 操作符
 
 
 ### 操作符
