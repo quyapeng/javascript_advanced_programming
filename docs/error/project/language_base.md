@@ -388,6 +388,26 @@ ECMAScript 6 增加let和const从客观上为这门语言更精确的生命作�
 ECMAScript 有6种简单数据类型，也称为原始类型：Undefined,Null,Boolean,String,Number,Symbol。
 Symbel是 ECMAScript 6新增的。还有一种复杂数据类型叫Object对象。Object是一种无序名值对的集合，因为在ECMAScript 中不能定义自己的数据类型，所有值都可以用上述7中数据类型之一来表示。只有7种数据类型似乎不足以表示全部数据，但是ECMAScript的数据类型很灵活，一种数据类型可以当作多重数据类型来使用。
 #### typeof 操作符
+因为 ECMAScript 的类型系统是松散的，所以需要一种手段来确定任意变量的数据类型。typeof 操作符就是为此而生。对一个值使用typeof操作符会反悔下列字符串之一
+1. undefined  表示值为定义
+2. boolean  表示值为布尔
+3. string  表示值为字符串
+4. number  表示值为数值
+5. object  表示值为对象，而不是函数或者null
+6. function  表示值为函数
+7. symbol  表示值为符号
+
+```js
+let message = "some string"; 
+console.log(typeof message); // "string" 
+console.log(typeof(message)); // "string" 
+console.log(typeof 95); // "number"
+```
+
+在这个例子中，我们把一个变量（message）和一个数值字面量传给了 typeof 操作符。注意，因为 typeof 是一个操作符而不是函数，所以不需要参数（但可以使用参数）。
+注意typeof在某些情况下返回的结果可能会让人费解，但技术上讲还是正确的。比如，调用typeof null 返回的是"object"。这是因为特殊值 null 被认为是一个对空对象的引用。
+
+注意 严格来讲，函数在 ECMAScript 中被认为是对象，并不代表一种数据类型。可是，函数也有自己特殊的属性。为此，就有必要通过 typeof 操作符来区分函数和其他对象。
 
 #### Undefined 类型
 
