@@ -407,10 +407,56 @@ console.log(typeof 95); // "number"
 在这个例子中，我们把一个变量（message）和一个数值字面量传给了 typeof 操作符。注意，因为 typeof 是一个操作符而不是函数，所以不需要参数（但可以使用参数）。
 注意typeof在某些情况下返回的结果可能会让人费解，但技术上讲还是正确的。比如，调用typeof null 返回的是"object"。这是因为特殊值 null 被认为是一个对空对象的引用。
 
-注意 严格来讲，函数在 ECMAScript 中被认为是对象，并不代表一种数据类型。可是，函数也有自己特殊的属性。为此，就有必要通过 typeof 操作符来区分函数和其他对象。
+注意： 严格来讲，函数在 ECMAScript 中被认为是对象，并不代表一种数据类型。可是，函数也有自己特殊的属性。为此，就有必要通过 typeof 操作符来区分函数和其他对象。
 
 #### Undefined 类型
+Undefined类型只有一个值，就是特殊值Undefined。当使用var或let声明了变量但没有初始化时，就相当于给变量赋予了Undefined的值。
+```js
+let message;
+console.log(message == undefined); // true
+```
+这个例子中，变量message在声明的时候并未初始化。而在比较它和undefined的字面值时，两者是相等的。这个例子等同于如下：
 
+```js
+let message = undefined;
+console.log(message == undefined); // true
+```
+这里，变量 message 显式地以 undefined 来初始化。但这是不必要的，因为默认情况下，任何未经初始化的变量都会取得 undefined 值。
+注意：
+一般来说，永远不用显式的给某个变量设置undefined值，字面值undefined主要用于比较，而且在ECMA-262第3版之前是不存在的。增加这个特殊值的目的就是为来正式明确空对象指针和未初始化变量的区别。
+
+注意，包含 undefined 值的变量跟未定义变量是有区别的。请看下面的例子：
+```js
+let message; // 这个变量被声明了，只是值为 undefined 
+// 确保没有声明过这个变量
+// let age 
+console.log(message); // "undefined" 
+console.log(age); // 报错
+```
+在上面的例子中，第一个 `console.log` 会指出变量 `message` 的值，即`"undefined"`。而第二个`console.log` 要输出一个未声明的变量 age 的值，因此会导致报错。对未声明的变量，只能执行一个有用的操作，就是对它调用 `typeof`。（对未声明的变量调用 `delete` 也不会报错，但这个操作没什么用，实际上在严格模式下会抛出错误。）
+在对未初始化的变量调用 `typeof` 时，返回的结果是`"undefined"`，但对未声明的变量调用它时，返回的结果还是`"undefined"`，这就有点让人看不懂了。比如下面的例子：
+```js
+let message; // 这个变量被声明了，只是值为 undefined 
+// 确保没有声明过这个变量
+// let age 
+console.log(typeof message); // "undefined" 
+console.log(typeof age); // "undefined"
+```
+无论是声明还是未声明，typeof 返回的都是字符串"undefined"。逻辑上讲这是对的，因为虽然严格来讲这两个变量存在根本性差异，但它们都无法执行实际操作。注意 即使未初始化的变量会被自动赋予 undefined 值，但我们仍然建议在声明变量的同时进行初始化。这样，当typeof 返回‘undefined’,你就会知道那是因为给定的变量尚未声明，而不是声明来未初始化。
+undefined是一个假值，因此，如果需要，可以用更简洁的方式检测它。不过要记住，也有很多其他可能的值同样是假值。所以一定要明确自己想要检测的就是undefined这个字面值，而不是仅仅是假值。
+```js
+let message; // 这个变量被声明了，只是值为 undefined 
+// age 没有声明
+if (message) { 
+ // 这个块不会执行
+} 
+if (!message) { 
+ // 这个块会执行
+} 
+if (age) { 
+ // 这里会报错
+}
+```
 #### Null 类型
 
 #### Boolean 类型
