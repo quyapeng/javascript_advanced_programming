@@ -482,6 +482,24 @@ undefined值是由null值派生而来的，因此ECMA-262将它们定义为表�
  `undefined` 区分开来。
 null是一个假值。因此，如果需要，可以用更简洁的方式检测它。不过 要记住，也有很多其他可能的值同样是假值。所以一定要明确自己想检 测的就是null这个字面值，而不仅仅是假值。
 
+```js
+
+
+ let message = null;
+ let age;
+if (message) {
+// 这个块不会执行
+}
+if (!message) { // 这个块会执行
+  }
+if (age) {
+// 这个块不会执行
+}
+if (!age) {
+// 这个块会执行
+}
+```
+
 #### Boolean 类型
 
 #### Number 类型
