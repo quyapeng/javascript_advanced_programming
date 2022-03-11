@@ -501,7 +501,20 @@ if (!age) {
 ```
 
 #### Boolean 类型
+Boolean(布尔值)类型是ECMAScript中使用最频繁的类型之一，有两 个字面值:true和false。这两个布尔值不同于数值，因此true不等于 1，false不等于0。下面是给变量赋布尔值的例子:
+```js
+let found = true;
+let lost = false;
+```
 
+
+注意，布尔值字面量true和false是区分大小写的，因此True和 False(及其他大小混写形式)是有效的标识符，但不是布尔值。
+虽然布尔值只有两个，但所有其他ECMAScript类型的值都有相应布尔 值的等价形式。要将一个其他类型的值转换为布尔值，可以调用特定的 Boolean()转型函数:
+```js
+let message = "Hello world!";
+let messageAsBoolean = Boolean(message);
+```
+在这个例子中，字符串message会被转换为布尔值并保存在变量 messageAsBoolean中。Boolean()转型函数可以在任意类型的数据上调 用，而且始终返回一个布尔值。什么值能转换为true或false的规则取 决于数据类型和实际的值。下表总结了不同类型与布尔值之间的转换规 则。
 #### Number 类型
 
 #### String 类型
