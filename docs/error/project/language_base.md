@@ -678,6 +678,19 @@ if (a + b == 0.3) {
 注意 之所以存在这种舍入错误，是因为使用了 IEEE 754 数 值，这种错误并非 ECMAScript 所独有。其他使用相同格式的 语言也有这个问题。
 
 2. 值的范围
+
+由于内存的限制，ECMAScript 并不支持表示这个世界上的所有数值。ECMAScript 可以表示的最小数值保存在 Number.MIN_VALUE 中，这个值在多数浏览器中是 5e-324;可以表示的最大数值保存 在 Number.MAX_VALUE 中，这个值在多数浏览器中是 1.797 693 134 862 315 7e+308。如果某个计算得到的数值结果超出了 JavaScript 可以表 示的范围，那么这个数值会被自动转换为一个特殊的 Infinity(无 穷)值。任何无法表示的负数以-Infinity(负无穷大)表示，任 何无法表示的正数以 Infinity(正无穷大)表示。
+
+如果计算返回正 Infinity 或负 Infinity，则该值将不能再进一步用 于任何计算。这是因为 Infinity 没有可用于计算的数值表示形式。 要确定一个值是不是有限大(即介于 JavaScript 能表示的最小值和最 大值之间)，可以使用 isFinite()函数，如下所示:
+
+```js
+let result = Number.MAX_VALUE + Number.MAX_VALUE;
+console.log(isFinite(result)); // false
+```
+
+虽然超出有限数值范围的计算并不多见，但总归还是有可能的。因此在计算非常大或非常小的数值时，有必要监测一下计算结果是否超出范围。
+注意 使用 Number.NEGATIVE_INFINITY 和 Number.POSITIVE_INFINITY 也可以获取正、负 Infinity。没 错，这两个属性包含的值分别就是-Infinity 和 Infinity。
+
 3. NaN
 4. 数值转换
 
