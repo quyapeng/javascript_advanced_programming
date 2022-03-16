@@ -692,6 +692,40 @@ console.log(isFinite(result)); // false
 注意 使用 Number.NEGATIVE_INFINITY 和 Number.POSITIVE_INFINITY 也可以获取正、负 Infinity。没 错，这两个属性包含的值分别就是-Infinity 和 Infinity。
 
 3. NaN
+   有一个特殊的数值叫 NaN，意思是“不是数值”(Not a Number)，用于表示本来要返回数值的操作失败了(而不是抛出错误)。比如，用 0 除任意数值在其他语言中通常都会导致错误，从而中止代码执 行。但在 ECMAScript 中，0、+0 或-0 相除会返回 NaN:
+
+```js
+console.log(0 / 0); // NaN
+console.log(-0 / +0); // NaN
+```
+
+如果分子是非 0 值，分母是有符号 0 或无符号 0，则会返回 Infinity 或-Infinity
+
+```js
+console.log(5 / 0); // Infinity
+console.log(5 / -0); // -Infinity
+```
+
+NaN 有几个独特的属性。首先，任何涉及 NaN 的操作始终返回 NaN(如 NaN/10)，在连续多步计算时这可能是个问题。其次，NaN 不等于包括 NaN 在内的任何值。例如，下面的比较操作会返回 false:
+
+```js
+console.log(NaN == NaN); // false
+```
+
+为此，ECMAScript 提供了 isNaN()函数。该函数接收一个参数，可 以是任意数据类型，然后判断这个参数是否“不是数值”。把一个值 传给 isNaN()后，该函数会尝试把它转换为数值。某些非数值的值 可以直接转换成数值，如字符串"10"或布尔值。任何不能转换为数 值的值都会导致这个函数返回 true。举例如下:
+
+```js
+console.log(isNaN(NaN)); // true
+console.log(isNaN(10)); // false，10是数值
+console.log(isNaN('10')); // false，可以转换为数值10
+console.log(isNaN('blue')); // true，不可以转换为数值
+console.log(isNaN(true)); // false，可以转换为数值1
+```
+
+上述的例子测试了 5 个不同的值。首先测试的是 NaN 本身，显然会返 回 true。接着测试了数值 10 和字符串"10"，都返回 false，因为它 们的数值都是 10。字符串"blue"不能转换为数值，因此函数返回 true。布尔值 true 可以转换为数值 1，因此返回 false。
+
+注意 虽然不常见，但 isNaN()可以用于测试对象。此时，首 先会调用对象的 valueOf()方法，然后再确定返回的值是否可 以转换为数值。如果不能，再调用 toString()方法，并测试其 返回值。这通常是 ECMAScript 内置函数和操作符的工作方 式，本章后面会讨论。
+
 4. 数值转换
 
 #### String 类型
