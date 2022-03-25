@@ -796,7 +796,12 @@ let num5 = parseFloat("0908.5"); // 908.5
 let num6 = parseFloat("3.125e7");  // 31250000
 ```
 #### String 类型
-
+String(字符串)数据类型表示零或多个16位Unicode字符序列。字符 串可以使用双引号(")、单引号(')或反引号(`)标示，因此下面的 代码都是合法的:
+```js
+let firstName = "John";
+let lastName = 'Jacob';
+let lastName = `Jingleheimerschmidt`;
+```
 #### Symbol 类型
 
 #### Object 类型
