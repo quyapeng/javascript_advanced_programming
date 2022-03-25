@@ -802,6 +802,7 @@ let firstName = "John";
 let lastName = 'Jacob';
 let lastName = `Jingleheimerschmidt`;
 ```
+
 #### Symbol 类型
 
 #### Object 类型
