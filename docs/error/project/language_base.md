@@ -835,7 +835,52 @@ console.log(text.length); // 28
 ```
 这个属性返回字符串中16位字符的个数。
 注意 如果字符串中包含双字节字符，那么length属性返回的 值可能不是准确的字符数。第5章将具体讨论如何解决这个问 题。
-          
+
+02. 字符串的特点
+ECMAScript中的字符串是不可变的(immutable)，意思是一旦创 建，它们的值就不能变了。要修改某个变量中的字符串值，必须先 销毁原始的字符串，然后将包含新值的另一个字符串保存到该变 量，如下所示:
+```js
+let lang = "Java";
+lang = lang + "Script";
+```
+这里，变量lang一开始包含字符串"Java"。紧接着，lang被重新定 义为包含"Java"和"Script"的组合，也就是"JavaScript"。整个过 程首先会分配一个足够容纳10个字符的空间，然后填充 上"Java"和"Script"。最后销毁原始的字符串"Java"和字符 串"Script"，因为这两个字符串都没有用了。所有处理都是在后台 发生的，而这也是一些早期的浏览器(如Firefox 1.0之前的版本和 IE6.0)在拼接字符串时非常慢的原因。这些浏览器在后来的版本中 都有针对性地解决了这个问题。
+03. 转换为字符串
+有两种方式把一个值转换为字符串。首先是使用几乎所有值都有的 toString()方法。这个方法唯一的用途就是返回当前值的字符串等 价物。比如:
+```js
+let age = 11;
+let ageAsString = age.toString(); // 字符串"11" let found = true;
+let foundAsString = found.toString(); // 字符串"true"
+```
+toString()方法可见于数值、布尔值、对象和字符串值。(没错， 字符串值也有toString()方法，该方法只是简单地返回自身的一个 副本。)null和undefined值没有toString()方法。
+多数情况下，toString()不接收任何参数。不过，在对数值调用这 个方法时，toString()可以接收一个底数参数，即以什么底数来输 出数值的字符串表示。默认情况下，toString()返回数值的十进制 字符串表示。而通过传入参数，可以得到数值的二进制、八进制、 十六进制，或者其他任何有效基数的字符串表示，比如:
+```js
+let num = 10; 
+console.log(num.toString()); // "10"
+console.log(num.toString(2)); // "1010"
+console.log(num.toString(8)); // "12"
+console.log(num.toString(10)); // "10"
+console.log(num.toString(16)); // "a"
+```
+这个例子展示了传入底数参数时，toString()输出的字符串值也会 随之改变。数值10可以输出为任意数值格式。注意，默认情况下 (不传参数)的输出与传入参数10得到的结果相同。
+如果你不确定一个值是不是null或undefined，可以使用String()转 型函数，它始终会返回表示相应类型值的字符串。String()函数遵 循如下规则。
+ a. 如果值有toString()方法，则调用该方法(不传参数)并返回 结果。
+ b. 如果值是null，返回"null"。 
+ c. 如果值是undefined，返回"undefined"。
+
+```js
+ let value1 = 10;
+ let value2 = true;
+ let value3 = null;
+ let value4;
+ console.log(String(value1));  // "10"
+ console.log(String(value2));  // "true"
+ console.log(String(value3));  // "null"
+ console.log(String(value4));  // "undefined"
+```
+这里展示了将4个值转换为字符串的情况:一个数值、一个布尔 值、一个null和一个undefined。数值和布尔值的转换结果与调 用toString()相同。因为null和undefined没有toString()方法，所 以String()方法就直接返回了这两个值的字面量文本。
+注意 用加号操作符给一个值加上一个空字符串""也可以将其 转换为字符串(加号操作符本章后面会介绍)。
+
+04. 模版字符串
+
 
 #### Symbol 类型
 
