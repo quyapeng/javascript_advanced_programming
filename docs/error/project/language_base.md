@@ -881,6 +881,60 @@ console.log(num.toString(16)); // "a"
 
 04. 模版字符串
 ECMAScript 6新增了使用模板字面量定义字符串的能力。与使用单 引号或双引号不同，模板字面量保留换行字符，可以跨行定义字符 串:
+```js
+let myMultiLineString = 'first line\nsecond line';
+let myMultiLineTemplateLiteral = `first line
+second line`;
+console.log(myMultiLineString);
+// first line
+// second line"
+console.log(myMultiLineTemplateLiteral);
+// first line
+// second line
+console.log(myMultiLineString === myMultiLinetemplateLiteral); // true
+```
+
+顾名思义，模板字面量在定义模板时特别有用，比如下面这个 HTML模板:
+
+```js
+let pageHTML = `
+<div>
+  <a href="#">
+    <span>Jake</span>
+  </a>
+</div>`;
+```
+由于模板字面量会保持反引号内部的空格，因此在使用时要格外注
+意。格式正确的模板字符串可能会看起来缩进不当:
+```js
+// 这个模板字面量在换行符之后有25个空格符 
+let myTemplateLiteral = `first line second line`;
+console.log(myTemplateLiteral.length);  // 47
+// 这个模板字面量以一个换行符开头
+let secondTemplateLiteral = `
+first line
+second line`;
+console.log(secondTemplateLiteral[0] === '\n'); // true
+// 这个模板字面量没有意料之外的字符
+let thirdTemplateLiteral = `first line second line`; console.log(thirdTemplateLiteral);
+// first line
+// second line
+```
+05. 字符串插值
+
+模板字面量最常用的一个特性是支持字符串插值，也就是可以在一 个连续定义中插入一个或多个值。技术上讲，模板字面量不是字符 串，而是一种特殊的JavaScript句法表达式，只不过求值后得到的是 字符串。模板字面量在定义时立即求值并转换为字符串实例，任何 插入的变量也会从它们最接近的作用域中取值。
+字符串插值通过在${}中使用一个JavaScript表达式实现:
+```js
+let value = 5;
+let exponent = 'second';
+// 以前，字符串插值是这样实现的: 
+let interpolatedString = value + ' to the ' + exponent + ' power is ' + (value * value);
+// 现在，可以用模板字面量这样实现: 
+let interpolatedTemplateLiteral =`${ value } to the ${ exponent } power is ${ value * value }`;
+console.log(interpolatedString);           // 5 to the second power is 25
+console.log(interpolatedTemplateLiteral);  // 5 to the second power is 25
+```
+
 
 #### Symbol 类型
 
