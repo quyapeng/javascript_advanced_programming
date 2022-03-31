@@ -924,6 +924,7 @@ let thirdTemplateLiteral = `first line second line`; console.log(thirdTemplateLi
 
 模板字面量最常用的一个特性是支持字符串插值，也就是可以在一 个连续定义中插入一个或多个值。技术上讲，模板字面量不是字符 串，而是一种特殊的JavaScript句法表达式，只不过求值后得到的是 字符串。模板字面量在定义时立即求值并转换为字符串实例，任何 插入的变量也会从它们最接近的作用域中取值。
 字符串插值通过在${}中使用一个JavaScript表达式实现:
+
 ```js
 let value = 5;
 let exponent = 'second';
