@@ -935,8 +935,63 @@ let interpolatedTemplateLiteral =`${ value } to the ${ exponent } power is ${ va
 console.log(interpolatedString);           // 5 to the second power is 25
 console.log(interpolatedTemplateLiteral);  // 5 to the second power is 25
 ```
+所有插入的值都会使用toString()强制转型为字符串，而且任何 JavaScript表达式都可以用于插值。嵌套的模板字符串无须转义:
+```js
+ console.log(`Hello, ${ `World` }!`);  // Hello, World!
+```
+将表达式转换为字符串时会调用toString():
+```js
+ let foo = { toString: () => 'World' };
+ console.log(`Hello, ${ foo }!`);      // Hello, World!
+```
+在插值表达式中可以调用函数和方法:
 
-
+```js
+function capitalize(word) {
+  return `${ word[0].toUpperCase() }${ word.slice(1) }`;
+}
+console.log(`${ capitalize('hello') }, ${ capitalize('world') }!`);
+// Hello, World!
+```
+此外，模板也可以插入自己之前的值:
+```js
+let value = '';
+function append() {
+  value = `${value}abc`
+  console.log(value);
+}
+append();  // abc
+append();  // abcabc
+append();  // abcabcabc
+```
+06. 模板字面量标签函数
+模板字面量也支持定义标签函数(tag function)，而通过标签函数 可以自定义插值行为。标签函数会接收被插值记号分隔后的模板和 对每个表达式求值的结果。
+标签函数本身是一个常规函数，通过前缀到模板字面量来应用自定
+义行为，如下例所示。标签函数接收到的参数依次是原始字符串数
+组和对每个表达式求值的结果。这个函数的返回值是对模板字面量
+求值得到的字符串。
+最好通过一个例子来理解:
+```js
+let a = 6;
+let b = 9;
+function simpleTag(strings, aValExpression, bValExpression, sumExpression) {
+  console.log(strings);
+  console.log(aValExpression);
+  console.log(bValExpression);
+  console.log(sumExpression);
+  return 'foobar';
+}
+let untaggedResult = `${ a } + ${ b } = ${ a + b }`;
+let taggedResult = simpleTag`${ a } + ${ b } = ${ a + b }`;
+// ["", " + ", " = ", ""]
+// 6
+// 9
+// 15
+console.log(untaggedResult);
+console.log(taggedResult);
+// "6 + 9 = 15"
+// "foobar"
+```
 #### Symbol 类型
 
 #### Object 类型
