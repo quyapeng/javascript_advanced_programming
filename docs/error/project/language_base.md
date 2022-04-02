@@ -965,6 +965,7 @@ append();  // abcabc
 append();  // abcabcabc
 ```
 06. 模板字面量标签函数
+
 模板字面量也支持定义标签函数(tag function)，而通过标签函数 可以自定义插值行为。标签函数会接收被插值记号分隔后的模板和 对每个表达式求值的结果。
 标签函数本身是一个常规函数，通过前缀到模板字面量来应用自定
 义行为，如下例所示。标签函数接收到的参数依次是原始字符串数
@@ -987,11 +988,44 @@ let taggedResult = simpleTag`${ a } + ${ b } = ${ a + b }`;
 // 6
 // 9
 // 15
-console.log(untaggedResult);
-console.log(taggedResult);
-// "6 + 9 = 15"
-// "foobar"
+console.log(untaggedResult);// "6 + 9 = 15"
+console.log(taggedResult);// "foobar"
 ```
+因为表达式参数的数量是可变的，所以通常应该使用剩余操作符 (rest operator)将它们收集到一个数组中:
+
+```js
+let a = 6;
+let b = 9;
+function simpleTag(strings, ...expressions) {
+  console.log(strings);
+  for(const expression of expressions) {
+    console.log(expression);
+  }
+  return 'foobar';
+}
+let taggedResult = simpleTag`${ a } + ${ b } = ${ a + b }`;
+// ["", " + ", " = ", ""]
+// 6
+// 9
+// 15
+console.log(taggedResult);  // "foobar"
+```
+对于有 个插值的模板字面量，传给标签函数的表达式参数的个数 始终是 ，而传给标签函数的第一个参数所包含的字符串个数则始 终是 。因此，如果你想把这些字符串和对表达式求值的结果拼 接起来作为默认返回的字符串，可以这样做:
+```js
+let a = 6;
+let b = 9;
+function zipTag(strings, ...expressions) {
+  return strings[0] +
+         expressions.map((e, i) => `${e}${strings[i + 1]}`)
+                    .join('');
+}
+let untaggedResult =    `${ a } + ${ b } = ${ a + b }`;
+let taggedResult = zipTag`${ a } + ${ b } = ${ a + b }`;
+console.log(untaggedResult);  // "6 + 9 = 15"
+console.log(taggedResult);    // "6 + 9 = 15"
+```
+
+07. 原始字符串
 #### Symbol 类型
 
 #### Object 类型
