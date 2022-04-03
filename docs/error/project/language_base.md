@@ -1026,7 +1026,48 @@ console.log(taggedResult);    // "6 + 9 = 15"
 ```
 
 07. 原始字符串
+使用模板字面量也可以直接获取原始的模板字面量内容(如换行符 或Unicode字符)，而不是被转换后的字符表示。为此，可以使用 默认的String.raw标签函数:
+```js
+// Unicode示例
+// \u00A9是版权符号
+console.log(`\u00A9`); // © console.log(String.raw`\u00A9`); // \u00A9
+// 换行符示例
+console.log(`first line\nsecond line`); // first line
+// second line
+console.log(String.raw`first line\nsecond line`); // "first line\nsecond line"
+// 对实际的换行符来说是不行的
+// 它们不会被转换成转义序列的形式 console.log(`first line second line`);
+// first line
+// second line
+console.log(String.raw`first line
+second line`);
+// first line
+// second line
+```
+另外，也可以通过标签函数的第一个参数，即字符串数组的.raw属 性取得每个字符串的原始内容:
+```js
+function printRaw(strings) {
+   console.log('Actual characters:');
+   for (const string of strings) {
+     console.log(string);
+   }
+   console.log('Escaped characters;');
+   for (const rawString of strings.raw) {
+     console.log(rawString);
+   }
+}
+printRaw`\u00A9${ 'and' }\n`; // Actual characters:
+// ©
+//(换行符)
+ // Escaped characters:
+ // \u00A9
+ // \n
+  
+```
 #### Symbol 类型
+Symbol(符号)是ECMAScript 6新增的数据类型。符号是原始值，且符 号实例是唯一、不可变的。符号的用途是确保对象属性使用唯一标识 符，不会发生属性冲突的危险。
+尽管听起来跟私有属性有点类似，但符号并不是为了提供私有属性的行 为才增加的(尤其是因为Object API提供了方法，可以更方便地发现符 号属性)。相反，符号就是用来创建唯一记号，进而用作非字符串形式 的对象属性。
+01. 符号的基本用法
 
 #### Object 类型
 
