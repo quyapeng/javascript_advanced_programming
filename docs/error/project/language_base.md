@@ -1068,6 +1068,40 @@ printRaw`\u00A9${ 'and' }\n`; // Actual characters:
 Symbol(符号)是ECMAScript 6新增的数据类型。符号是原始值，且符 号实例是唯一、不可变的。符号的用途是确保对象属性使用唯一标识 符，不会发生属性冲突的危险。
 尽管听起来跟私有属性有点类似，但符号并不是为了提供私有属性的行 为才增加的(尤其是因为Object API提供了方法，可以更方便地发现符 号属性)。相反，符号就是用来创建唯一记号，进而用作非字符串形式 的对象属性。
 01. 符号的基本用法
+符号需要使用Symbol()函数初始化。因为符号本身是原始类型，所
+以typeof操作符对符号返回symbol。
+```js
+let sym = Symbol();
+console.log(typeof sym); // symbol
+```
+调用Symbol()函数时，也可以传入一个字符串参数作为对符号的描 述(description)，将来可以通过这个字符串来调试代码。但是， 这个字符串参数与符号定义或标识完全无关:
+```js
+let genericSymbol = Symbol();
+let otherGenericSymbol = Symbol();
+let fooSymbol = Symbol('foo');
+let otherFooSymbol = Symbol('foo');
+console.log(genericSymbol == otherGenericSymbol);  // false
+console.log(fooSymbol == otherFooSymbol);          // false
+```
+符号没有字面量语法，这也是它们发挥作用的关键。按照规范，你 只要创建Symbol()实例并将其用作对象的新属性，就可以保证它不 会覆盖已有的对象属性，无论是符号属性还是字符串属性。
+```js
+let genericSymbol = Symbol();
+console.log(genericSymbol);  // Symbol()
+let fooSymbol = Symbol('foo');
+console.log(fooSymbol);      // Symbol(foo);
+```
+最重要的是，Symbol()函数不能用作构造函数，与new关键字一起 使用。这样做是为了避免创建符号包装对象，像使 用Boolean、String或Number那样，它们都支持构造函数且可用于初 始化包含原始值的包装对象:
+```js
+let myBoolean = new Boolean();
+console.log(typeof myBoolean); // "object"
+let myString = new String();
+console.log(typeof myString);  // "object"
+let myNumber = new Number();
+console.log(typeof myNumber);  // "object"
+let mySymbol = new Symbol(); // TypeError: Symbol is not a constructor
+```
+
+
 
 #### Object 类型
 
