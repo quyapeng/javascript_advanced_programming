@@ -1141,7 +1141,64 @@ let s2 = Symbol('bar'); console.log(Symbol.keyFor(s2)); // undefined
 Symbol.keyFor(123); // TypeError: 123 is not a symbol
 ```
 
-03. 
+03. 使用符号作为属性
+凡是可以使用字符串或数值作为属性的地方，都可以使用符号。这 就包括了对象字面量属性和 Object.defineProperty()/Object.defineProperties()定义的属 性。对象字面量只能在计算属性语法中使用符号作为属性。
+```js
+let s1 = Symbol('foo'),
+    s2 = Symbol('bar'),
+    s3 = Symbol('baz'),
+    s4 = Symbol('qux');
+let o = {
+   [s1]: 'foo val'
+};
+// 这样也可以:o[s1] = 'foo val';
+ console.log(o);
+ // {Symbol(foo): foo val}
+ Object.defineProperty(o, s2, {value: 'bar val'});
+ console.log(o);
+ // {Symbol(foo): foo val, Symbol(bar): bar val}
+ Object.defineProperties(o, {
+   [s3]: {value: 'baz val'},
+   [s4]: {value: 'qux val'}
+});
+ console.log(o);
+ // {Symbol(foo): foo val, Symbol(bar): bar val,
+ //  Symbol(baz): baz val, Symbol(qux): qux val} 
+```
+类似于Object.getOwnPropertyNames()返回对象实例的常规属性数 组，Object.getOwnPropertySymbols()返回对象实例的符号属性数 组。这两个方法的返回值彼此互 斥。Object.getOwnPropertyDescriptors()会返回同时包含常规和 符号属性描述符的对象。Reflect.ownKeys()会返回两种类型的键:
+```js
+let s1 = Symbol('foo'),
+    s2 = Symbol('bar');
+let o = {
+  [s1]: 'foo val',
+  [s2]: 'bar val',
+  baz: 'baz val',
+  qux: 'qux val'
+};
+console.log(Object.getOwnPropertySymbols(o));
+// [Symbol(foo), Symbol(bar)]
+console.log(Object.getOwnPropertyNames(o));
+// ["baz", "qux"]
+console.log(Object.getOwnPropertyDescriptors(o));
+// {baz: {...}, qux: {...}, Symbol(foo): {...}, Symbol(bar): {...}}
+console.log(Reflect.ownKeys(o));
+// ["baz", "qux", Symbol(foo), Symbol(bar)]
+```
+因为符号属性是对内存中符号的一个引用，所以直接创建并用作属
+性的符号不会丢失。但是，如果没有显式地保存对这些属性的引
+用，那么必须遍历对象的所有符号属性才能找到相应的属性键:
+```js
+let o = {
+  [Symbol('foo')]: 'foo val',
+  [Symbol('bar')]: 'bar val'
+};
+console.log(o);
+// {Symbol(foo): "foo val", Symbol(bar): "bar val"}
+let barSymbol = Object.getOwnPropertySymbols(o)
+              .find((symbol) => symbol.toString().match(/bar/));
+console.log(barSymbol);
+// Symbol(bar)
+```
 #### Object 类型
 
 #### typeof 操作符
