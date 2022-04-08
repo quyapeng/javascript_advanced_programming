@@ -1199,6 +1199,23 @@ let barSymbol = Object.getOwnPropertySymbols(o)
 console.log(barSymbol);
 // Symbol(bar)
 ```
+04. 常用内置符号
+ECMAScript 6也引入了一批常用内置符号(well-known symbol)， 用于暴露语言内部行为，开发者可以直接访问、重写或模拟这些行 为。这些内置符号都以Symbol工厂函数字符串属性的形式存在。
+这些内置符号最重要的用途之一是重新定义它们，从而改变原生结 构的行为。比如，我们知道for-of循环会在相关对象上使 用Symbol.iterator属性，那么就可以通过在自定义对象上重新定 义Symbol.iterator的值，来改变for-of在迭代该对象时的行为。
+这些内置符号也没有什么特别之处，它们就是全局函数Symbol的普 通字符串属性，指向一个符号的实例。所有内置符号属性都是不可 写、不可枚举、不可配置的。
+注意 在提到ECMAScript规范时，经常会引用符号在规范中 的名称，前缀为@@。比如，@@iterator指的就 是Symbol.iterator。
+05. Symbol.asyncIterator
+根据ECMAScript规范，这个符号作为一个属性表示“一个方法，该 方法返回对象默认的AsyncIterator。由for-await-of语句使用”。 换句话说，这个符号表示实现异步迭代器API的函数。
+
+for-await-of循环会利用这个函数执行异步迭代操作。循环时，它 们会调用以Symbol.asyncIterator为键的函数，并期望这个函数会 返回一个实现迭代器API的对象。很多时候，返回的对象是实现该 API的AsyncGenerator:
+```js
+class Foo {
+  async *[Symbol.asyncIterator]() {}
+}
+let f = new Foo();
+console.log(f[Symbol.asyncIterator]());
+// AsyncGenerator {<suspended>}
+```
 #### Object 类型
 
 #### typeof 操作符
