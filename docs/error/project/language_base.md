@@ -1216,6 +1216,51 @@ let f = new Foo();
 console.log(f[Symbol.asyncIterator]());
 // AsyncGenerator {<suspended>}
 ```
+技术上，这个由Symbol.asyncIterator函数生成的对象应该通过 其next()方法陆续返回Promise实例。可以通过显式地调用next()方 法返回，也可以隐式地通过异步生成器函数返回:
+```js
+class Emitter {
+  constructor(max) {
+    this.max = max;
+    this.asyncIdx = 0;
+  }
+  async *[Symbol.asyncIterator]() {
+    while(this.asyncIdx < this.max) {
+      yield new Promise((resolve) => resolve(this.asyncIdx++));
+    }
+} }
+async function asyncCount() {
+  let emitter = new Emitter(5);
+  for await(const x of emitter) {
+    console.log(x);
+} }
+asyncCount();
+// 0
+// 1
+// 2
+// 3 // 4
+```
+注意 Symbol.asyncIterator是ES2018规范定义的，因此只有 版本非常新的浏览器支持它。关于异步迭代和for-await-of循 环的细节.
+06. Symbol.hasInstance
+根据ECMAScript规范，这个符号作为一个属性表示“一个方法，该 方法决定一个构造器对象是否认可一个对象是它的实例。 由instanceof操作符使用”。instanceof操作符可以用来确定一个对 象实例的原型链上是否有原型。instanceof的典型使用场景如下:
+```js
+function Foo() {}
+let f = new Foo();
+console.log(f instanceof Foo); // true
+class Bar {}
+let b = new Bar();
+console.log(b instanceof Bar); // true
+```
+在ES6中，instanceof操作符会使用Symbol.hasInstance函数来确定 关系。以Symbol.hasInstance为键的函数会执行同样的操作，只是 操作数对调了一下:
+```js
+function Foo() {}
+let f = new Foo();
+console.log(Foo[Symbol.hasInstance](f)); // true
+class Bar {}
+let b = new Bar();
+console.log(Bar[Symbol.hasInstance](b)); // true
+```
+
+
 #### Object 类型
 
 #### typeof 操作符
