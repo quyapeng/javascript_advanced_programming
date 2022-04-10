@@ -1259,7 +1259,74 @@ class Bar {}
 let b = new Bar();
 console.log(Bar[Symbol.hasInstance](b)); // true
 ```
-
+这个属性定义在Function的原型上，因此默认在所有函数和类上都 可以调用。由于instanceof操作符会在原型链上寻找这个属性定 义，就跟在原型链上寻找其他属性一样，因此可以在继承的类上通 过静态方法重新定义这个函数:
+```js
+class Bar {}
+class Baz extends Bar {
+  static [Symbol.hasInstance]() {
+    return false;
+} }
+let b = new Baz();
+console.log(Bar[Symbol.hasInstance](b)); // true
+console.log(b instanceof Bar);           // true
+console.log(Baz[Symbol.hasInstance](b)); // false
+console.log(b instanceof Baz);           // false
+```
+07. Symbol.isConcatSpreadable
+根据ECMAScript规范，这个符号作为一个属性表示“一个布尔值， 如果是true，则意味着对象应该用Array.prototype.concat()打平 其数组元素”。ES6中的Array.prototype.concat()方法会根据接收 到的对象类型选择如何将一个类数组对象拼接成数组实例。覆盖 Symbol.isConcatSpreadable的值可以修改这个行为。
+数组对象默认情况下会被打平到已有的数组，false或假值会导致 整个对象被追加到数组末尾。类数组对象默认情况下会被追加到数 组末尾，true或真值会导致这个类数组对象被打平到数组实例。其 他不是类数组对象的对象在Symbol.isConcatSpreadable被设置 为true的情况下将被忽略。
+```js
+let initial = ['foo'];
+let array = ['bar'];
+console.log(array[Symbol.isConcatSpreadable]);  // undefined
+console.log(initial.concat(array));             // ['foo', 'bar']
+array[Symbol.isConcatSpreadable] = false;
+console.log(initial.concat(array));             // ['foo', Array(1)]
+let arrayLikeObject = { length: 1, 0: 'baz' };
+console.log(arrayLikeObject[Symbol.isConcatSpreadable]);  // undefined
+console.log(initial.concat(arrayLikeObject));             // ['foo', {...}]
+arrayLikeObject[Symbol.isConcatSpreadable] = true;
+console.log(initial.concat(arrayLikeObject));             // ['foo', 'baz']
+let otherObject = new Set().add('qux');
+console.log(otherObject[Symbol.isConcatSpreadable]);  // undefined
+console.log(initial.concat(otherObject));             // ['foo', Set(1)]
+otherObject[Symbol.isConcatSpreadable] = true;
+console.log(initial.concat(otherObject));             // ['foo']
+```
+08. Symbol.iterator
+根据ECMAScript规范，这个符号作为一个属性表示“一个方法，该 方法返回对象默认的迭代器。由for-of语句使用”。换句话说，这 个符号表示实现迭代器API的函数。
+for-of循环这样的语言结构会利用这个函数执行迭代操作。循环 时，它们会调用以Symbol.iterator为键的函数，并默认这个函数会 返回一个实现迭代器API的对象。很多时候，返回的对象是实现该API的Generator:
+```js
+class Foo {
+  *[Symbol.iterator]() {}
+}
+let f = new Foo();
+console.log(f[Symbol.iterator]());
+// Generator {<suspended>}
+```
+技术上，这个由Symbol.iterator函数生成的对象应该通过其 next() 方法陆续返回值。可以通过显式地调用next()方法返回，也可以隐式地通过生成器函数返回:
+```js
+class Emitter {
+  constructor(max) {
+    this.max = max;
+    this.idx = 0;
+  }
+  *[Symbol.iterator]() {
+    while(this.idx < this.max) {
+      yield this.idx++;
+    }
+} }
+function count() {
+  let emitter = new Emitter(5);
+  for (const x of emitter) {
+    console.log(x);
+} }
+count();
+// 0
+// 1
+// 2
+// 3
+```
 
 #### Object 类型
 
