@@ -1327,6 +1327,34 @@ count();
 // 2
 // 3
 ```
+09. Symbol.match
+根据ECMAScript规范，这个符号作为一个属性表示“一个正则表达 式方法，该方法用正则表达式去匹配字符串。
+由String.prototype.match()方法使 用”。String.prototype.match()方法会使用以Symbol.match为键的 函数来对正则表达式求值。正则表达式的原型上默认有这个函数的 定义，因此所有正则表达式实例默认是这个String方法的有效参 数:
+```js
+console.log(RegExp.prototype[Symbol.match]);
+// f [Symbol.match]() { [native code] }
+console.log('foobar'.match(/bar/));
+// ["bar", index: 3, input: "foobar", groups: undefined]
+```
+给这个方法传入非正则表达式值会导致该值被转换为RegExp对象。 如果想改变这种行为，让方法直接使用参数，则可以重新定 义Symbol.match函数以取代默认对正则表达式求值的行为，从而让 match()方法使用非正则表达式实例。Symbol.match函数接收一个参 数，就是调用match()方法的字符串实例。返回的值没有限制:
+```js
+class FooMatcher {
+  static [Symbol.match](target) {
+    return target.includes('foo');
+  }
+}
+console.log('foobar'.match(FooMatcher)); // true
+console.log('barbaz'.match(FooMatcher)); // false
+class StringMatcher {
+  constructor(str) {
+    this.str = str;
+  }
+  [Symbol.match](target) {
+    return target.includes(this.str);
+} }
+console.log('foobar'.match(new StringMatcher('foo'))); // true
+console.log('barbaz'.match(new StringMatcher('qux'))); // false
+```
 
 #### Object 类型
 
