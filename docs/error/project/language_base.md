@@ -1355,7 +1355,33 @@ class StringMatcher {
 console.log('foobar'.match(new StringMatcher('foo'))); // true
 console.log('barbaz'.match(new StringMatcher('qux'))); // false
 ```
-
+10. Symbol.replace
+根据ECMAScript规范，这个符号作为一个属性表示“一个正则表达 式方法，该方法替换一个字符串中匹配的子串。 由String.prototype.replace()方法使用”。String.prototype.replace()方法会使用以Symbol.replace为 键的函数来对正则表达式求值。正则表达式的原型上默认有这个函 数的定义，因此所有正则表达式实例默认是这个String方法的有效 参数:
+```js
+console.log(RegExp.prototype[Symbol.replace]);
+// f [Symbol.replace]() { [native code] }
+console.log('foobarbaz'.replace(/bar/, 'qux'));
+// 'fooquxbaz'
+```
+给这个方法传入非正则表达式值会导致该值被转换为RegExp对象。 如果想改变这种行为，让方法直接使用参数，可以重新定 义Symbol.replace函数以取代默认对正则表达式求值的行为，从而 让replace()方法使用非正则表达式实例。Symbol.replace函数接收 两个参数，即调用replace()方法的字符串实例和替换字符串。返 回的值没有限制:
+```js
+class FooReplacer {
+  static [Symbol.replace](target, replacement) {
+    return target.split('foo').join(replacement);
+  }
+}
+console.log('barfoobaz'.replace(FooReplacer, 'qux'));
+// "barquxbaz"
+class StringReplacer {
+  constructor(str) {
+    this.str = str;
+  }
+  [Symbol.replace](target, replacement) {
+    return target.split(this.str).join(replacement);
+} }
+console.log('barfoobaz'.replace(new StringReplacer('foo'), 'qux'));
+// "barquxbaz"
+```
 #### Object 类型
 
 #### typeof 操作符
