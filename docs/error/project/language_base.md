@@ -1382,6 +1382,56 @@ class StringReplacer {
 console.log('barfoobaz'.replace(new StringReplacer('foo'), 'qux'));
 // "barquxbaz"
 ```
+11. Symbol.search
+根据ECMAScript规范，这个符号作为一个属性表示“一个正则表达 式方法，该方法返回字符串中匹配正则表达式的索引。 由String.prototype.search()方法使用”。String.prototype.search()方法会使用以Symbol.search为键 的函数来对正则表达式求值。正则表达式的原型上默认有这个函数 的定义，因此所有正则表达式实例默认是这个String方法的有效参 数:
+```js
+console.log(RegExp.prototype[Symbol.search]);
+// f [Symbol.search]() { [native code] }
+console.log('foobar'.search(/bar/));
+// 3
+```
+给这个方法传入非正则表达式值会导致该值被转换为RegExp对象。 如果想改变这种行为，让方法直接使用参数，可以重新定 义Symbol.search函数以取代默认对正则表达式求值的行为，从而 让search()方法使用非正则表达式实例。Symbol.search函数接收一 个参数，就是调用match()方法的字符串实例。返回的值没有限 制:
+```js
+class FooSearcher {
+  static [Symbol.search](target) {
+    return target.indexOf('foo');
+  }
+}
+console.log('foobar'.search(FooSearcher)); // 0
+console.log('barfoo'.search(FooSearcher)); // 3
+console.log('barbaz'.search(FooSearcher)); // -1
+class StringSearcher {
+  constructor(str) {
+    this.str = str;
+  }
+  [Symbol.search](target) {
+    return target.indexOf(this.str);
+} }
+console.log('foobar'.search(new StringSearcher('foo'))); // 0
+console.log('barfoo'.search(new StringSearcher('foo'))); // 3
+console.log('barbaz'.search(new StringSearcher('qux'))); // -1
+```
+12. Symbol.species
+根据ECMAScript规范，这个符号作为一个属性表示“一个函数值， 该函数作为创建派生对象的构造函数”。这个属性在内置类型中最常用，用于对内置类型实例方法的返回值暴露实例化派生对象的方 法。用Symbol.species定义静态的获取器(getter)方法，可以覆盖 新创建实例的原型定义:
+```js
+class Bar extends Array {}
+class Baz extends Array {
+  static get [Symbol.species]() {
+    return Array;
+} }
+let bar = new Bar();
+console.log(bar instanceof Array); // true
+console.log(bar instanceof Bar);   // true
+bar = bar.concat('bar');
+console.log(bar instanceof Array); // true
+console.log(bar instanceof Bar);   // true
+let baz = new Baz();
+console.log(baz instanceof Array); // true
+console.log(baz instanceof Baz);   // true
+baz = baz.concat('baz');
+console.log(baz instanceof Array); // true
+console.log(baz instanceof Baz);   // false
+```
 #### Object 类型
 
 #### typeof 操作符
